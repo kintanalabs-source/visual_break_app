@@ -11,6 +11,8 @@ class PopupManager {
     if (fullScreen) {
       await windowManager.setFullScreen(true);
       await windowManager.setAlwaysOnTop(true);
+      await windowManager.setMinimizable(false);
+      await windowManager.setClosable(false);
     } else {
       await windowManager.setSize(Size(config.width, config.height));
       await _setPosition(config.position, config.width, config.height);
@@ -23,6 +25,10 @@ class PopupManager {
 
   static Future<void> hidePopup() async {
     AppLogger.i('Exiting break mode');
+    
+    // Re-enable window controls before exiting break mode.
+    await windowManager.setMinimizable(true);
+    await windowManager.setClosable(true);
     
     // On Linux, transitioning from full-screen to hidden can sometimes cause crashes.
     // We first exit full-screen and disable "always on top".
